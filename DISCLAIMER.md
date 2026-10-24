@@ -6,11 +6,13 @@ Por favor, lea atentamente este descargo de responsabilidad antes de utilizar cu
 
 ---
 
-### 1. Naturaleza y Propósito Exclusivamente Educativo
+### 1. Proyecto No Oficial (Unofficial Project) y Propósito Educativo
 
-Este repositorio, su código fuente, colecciones de Postman y documentación han sido elaborados y publicados **única y exclusivamente con fines didácticos, educativos y de investigación técnica** en el ámbito de la ingeniería de software, arquitectura de APIs REST y análisis de integración de sistemas web.
+Este repositorio, su código fuente, colecciones de Postman y documentación constituyen un **proyecto comunitario, independiente y estrictamente NO OFICIAL (*unofficial*)**. 
 
-Bajo ninguna circunstancia este proyecto promueve, alienta ni pretende facilitar actividades ilícitas, acceso no autorizado a sistemas informáticos o vulneración de plataformas de terceros.
+- **Carácter No Oficial:** Este proyecto no es oficial, no cuenta con autorización, respaldo ni participación de ninguna empresa o entidad vinculada a la marca Bravo.
+- **Propósito Didáctico:** Ha sido elaborado y publicado **única y exclusivamente con fines didácticos, educativos y de investigación técnica** en el ámbito de la ingeniería de software, arquitectura de APIs REST y análisis de integración de sistemas web.
+- **Sin Promoción Ilícita:** Bajo ninguna circunstancia este proyecto promueve, alienta ni pretende facilitar actividades ilícitas, acceso no autorizado a sistemas informáticos o vulneración de plataformas de terceros.
 
 ---
 

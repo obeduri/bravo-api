@@ -1,16 +1,17 @@
-# Bravo API - Colección de Postman y Documentación
+# Bravo API (No Oficial / Unofficial) - Colección de Postman
 
-Colección documentada y modular de peticiones HTTP (Postman) creada exclusivamente para fines didácticos, de investigación técnica y aprendizaje sobre el consumo e integración de servicios REST.
+Colección comunitaria y **estrictamente NO OFICIAL (*unofficial*)**, documentada y modular de peticiones HTTP (Postman) creada exclusivamente para fines didácticos, de investigación técnica y aprendizaje sobre el consumo e integración de servicios REST.
 
 ---
 
 > [!WARNING]
-> ### ⚠️ Descargo de Responsabilidad (Aviso Legal)
+> ### ⚠️ Proyecto NO Oficial e Independiente (Aviso Legal)
 >
-> **Este proyecto ha sido desarrollado exclusivamente con propósitos educativos y de análisis técnico.**
+> **Este proyecto es 100% no oficial (*unofficial*), comunitario y carece de cualquier vinculación institucional o corporativa.**
 >
-> - **Propiedad Intelectual:** La especificación técnica (spec), colecciones, estructura de endpoints, peticiones (requests), nombres de parámetros y todo lo relacionado con la API son **propiedad intelectual exclusiva de Provisiones Bravo / Grupo Bravo**. Este proyecto no reclama ningún derecho, autoría ni titularidad sobre dicha arquitectura.
+> - **Proyecto NO Oficial:** Este repositorio no es, no representa ni pretende ser una herramienta oficial. No cuenta con aval, autorización ni respaldo de ninguna entidad.
 > - **Sin Asociación Comercial:** Este proyecto es completamente independiente y **no está asociado, vinculado, respaldado, patrocinado ni afiliado de ninguna manera con Provisiones Bravo / Grupo Bravo / Supermercados Bravo**, ni con ninguna de sus empresas matrices, filiales o subsidiarias.
+> - **Propiedad Intelectual:** La especificación técnica (spec), colecciones, estructura de endpoints, peticiones (requests), nombres de parámetros y todo lo relacionado con la API son **propiedad intelectual exclusiva de Provisiones Bravo / Grupo Bravo**. Este proyecto no reclama ningún derecho, autoría ni titularidad sobre dicha arquitectura.
 > - **Marcas y Referencias:** Los nombres comerciales, marcas registradas y logotipos pertenecen exclusivamente a sus respectivos titulares. Su uso es puramente descriptivo, técnico y con fines de compatibilidad educativa (*fair use*).
 > - **Prohibición de Mal Uso:** Se prohíbe terminantemente el uso de esta información o de sus archivos para realizar actividades maliciosas, ataques a sistemas, sobrecarga de servidores, extracción masiva abusiva de datos (*scraping*), suplantación de identidad o cualquier actividad que contravenga las leyes aplicables o los términos de servicio de terceros.
 > - **Responsabilidad Exclusiva del Usuario:** El autor no se hace responsable por el uso inapropiado, descuidado o ilegal que terceras personas puedan hacer de este material. Cualquier uso corre bajo la entera responsabilidad del usuario final.

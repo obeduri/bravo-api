@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "ab57a98c-bcb2-4170-aed3-793092fe3c00",
+    "_postman_id": "0f396d7f-7c53-47a1-b5ef-b594875116c5",
     "name": "PUBLIC - GET PHOTOS",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -32,7 +32,7 @@
             }
           ]
         },
-        "description": "## CDN de Imágenes de Productos\n\nPermite descargar o renderizar la imagen oficial de un producto a partir de su código externo y dimensiones deseadas.\n\n### Parámetros de Ruta (Path Variables)\n- `{{size}}`: Resolución deseada (ej. `300x300`, `600x600`, etc.).\n- `{{idexternoArticulo}}`: Código externo o identificador visual del artículo.\n\n### Parámetros de Consulta (Query Params)\n- `v`: Número de versión para invalidar la caché del navegador o CDN."
+        "description": "## CDN de Imágenes de Productos\n\nPermite descargar o renderizar la imagen de catálogo de un producto a partir de su código externo y dimensiones deseadas.\n\n### Parámetros de Ruta (Path Variables)\n- `{{size}}`: Resolución deseada (ej. `300x300`, `600x600`, etc.).\n- `{{idexternoArticulo}}`: Código externo o identificador visual del artículo.\n\n### Parámetros de Consulta (Query Params)\n- `v`: Número de versión para invalidar la caché del navegador o CDN."
       },
       "response": [],
       "event": [
