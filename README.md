@@ -94,15 +94,54 @@ La colección y los archivos individuales utilizan variables para evitar exponer
 
 ## 📥 Cómo Empezar
 
-1. Clona el repositorio:
-   ```bash
-   git clone https://github.com/tu-usuario/bravo-api.git
-   ```
-2. Abre **Postman**.
-3. Haz clic en **Import** (Importar) y selecciona:
-   - `bravo-api-collection.json` para importar toda la colección junta, o
-   - Cualquiera de los archivos dentro de la carpeta `requests/` para trabajar con una petición en específico.
-4. Define las variables `codUsuario` y `claveUsuario` en tus variables de entorno o de colección y ejecuta la petición `LOGIN`.
+Sigue esta guía paso a paso para importar y probar la colección en tu entorno de Postman o por línea de comandos:
+
+### 1. Clonar el Repositorio
+```bash
+git clone https://github.com/obeduri/bravo-api.git
+cd bravo-api
+```
+
+### 2. Importar en Postman
+1. Abre la aplicación de **Postman**.
+2. Haz clic en el botón superior **Import** (o arrastra los archivos a la interfaz).
+3. Selecciona tu método de trabajo:
+   - **Colección Completa (Recomendado):** Importa el archivo `bravo-api-collection.json`. Tendrás acceso a todos los endpoints organizados en carpetas `PUBLIC` y `PRIVATE`.
+   - **Peticiones Individuales:** Si solo requieres probar endpoints específicos, puedes importar cualquier archivo de la carpeta `requests/public/` o `requests/private/`.
+
+### 3. Configurar tus Credenciales
+1. Haz clic sobre la colección **BRAVO-API** importada en la barra lateral izquierda.
+2. Ve a la pestaña **Variables**.
+3. En la columna *Current Value* (Valor Actual), asigna tus credenciales:
+   - `codUsuario`: Tu número de cédula o usuario.
+   - `claveUsuario`: Tu contraseña personal (marca el campo como tipo *Secret* si deseas ocultar el texto).
+4. Guarda los cambios (**Ctrl+S** o **Cmd+S**).
+
+### 4. Flujo de Prueba Recomendado
+1. **Iniciar Sesión:** Abre la petición `PUBLIC > LOGIN` y presiona **Send**.
+   - Si las credenciales son válidas, recibirás una respuesta `200 OK`.
+   - El script de prueba integrado asignará automáticamente el token retornado a la variable `X-Auth-Token`.
+2. **Consultar Catálogo y Productos:**
+   - Prueba `PUBLIC > LIST ARTICULOS` para listar productos disponibles en la tienda configurada (`idTienda=1008`).
+   - Prueba `PUBLIC > SEARCH PRODUCT` cambiando el parámetro `model.nombreArticulo` (ej. `Arroz`, `Leche`).
+3. **Probar Endpoints Privados:**
+   - Abre `PRIVATE > GET CLIENTE DIRECCION` o `PRIVATE > GET FAVORITOS` y ejecuta **Send**.
+   - No necesitas copiar ni pegar ningún token manualmente: la autenticación se gestiona de forma automática mediante la cabecera `X-Auth-Token`.
+4. **Cerrar Sesión:**
+   - Al terminar, ejecuta `PRIVATE > LOGOUT`. El servidor revocará el token y el script limpiará la variable de sesión.
+
+---
+
+### 💡 Ejecución desde la Terminal con Newman (Opcional)
+
+Si prefieres ejecutar pruebas automatizadas por consola sin abrir Postman:
+
+```bash
+npx newman run bravo-api-collection.json \
+  --env-var "codUsuario=TU_CEDULA" \
+  --env-var "claveUsuario=TU_CLAVE" \
+  --folder "PUBLIC"
+```
 
 ---
 
