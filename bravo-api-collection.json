@@ -1,0 +1,809 @@
+{
+  "info": {
+    "_postman_id": "219d8533-e97d-410f-b93f-dc752ff3ce30",
+    "name": "BRAVO-API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "27066362",
+    "_collection_link": "https://go.postman.co/collection/27066362-219d8533-e97d-410f-b93f-dc752ff3ce30?source=collection_link",
+    "description": "# BRAVO-API - Colección de Postman y Guía Técnica\n\nBienvenido a la colección oficial de Postman para el análisis técnico e integración de la API de **Bravo / BravoVa**.\n\n> [!NOTE]\n> **Aviso de Propiedad Intelectual:** La especificación técnica, estructuras, rutas, nombres de parámetros y modelos de datos de esta API son propiedad intelectual exclusiva de **Provisiones Bravo / Grupo Bravo**. Este proyecto se ha elaborado con fines estrictamente educativos y de investigación técnica de código abierto bajo licencia GPL-2.0. Consulte [DISCLAIMER.md](file:///Users/user/Documents/code/bravo-api/DISCLAIMER.md) para más detalles.\n\n---\n\n## 🚀 Flujo de Autenticación y Uso\n\n1. **Configurar Credenciales:**\n   - Asigne sus valores a las variables de colección o de entorno: `codUsuario` (cédula/usuario) y `claveUsuario` (contraseña).\n2. **Ejecutar `LOGIN`:**\n   - La petición `PUBLIC > LOGIN` envía las credenciales en formato `multipart/form-data`.\n   - El script de prueba (*Test Script*) extrae automáticamente el token retornado (`response.data.token`) y lo guarda en las variables `X-Auth-Token` tanto del entorno como de la colección.\n3. **Realizar Peticiones Privadas:**\n   - La carpeta `PRIVATE` tiene configurada autenticación de tipo API Key en la cabecera `X-Auth-Token`.\n   - Todas las peticiones dentro de `PRIVATE` heredan automáticamente dicho token.\n4. **Cerrar Sesión:**\n   - Al ejecutar `PRIVATE > LOGOUT`, el servidor invalida el token y el script de prueba limpia automáticamente la variable `X-Auth-Token`.\n\n---\n\n## 📋 Códigos de Estado HTTP Habituales\n\n| Código | Estado | Significado |\n| :--- | :--- | :--- |\n| `200` | OK | Petición ejecutada exitosamente. |\n| `400` | Bad Request | Parámetros inválidos o faltantes en la consulta o cuerpo. |\n| `401` | Unauthorized | Token de sesión ausente, inválido o expirado. |\n| `403` | Forbidden | Acceso no permitido al recurso solicitado. |\n| `404` | Not Found | Artículo, sección o tienda no encontrada. |\n| `500` | Internal Server Error | Error interno en los servidores de la plataforma. |\n"
+  },
+  "item": [
+    {
+      "name": "PUBLIC",
+      "item": [
+        {
+          "name": "LOGIN",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Código de estado HTTP es 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Respuesta contiene token de sesión\", function () {\r",
+                  "    pm.expect(response).to.have.property(\"data\");\r",
+                  "    pm.expect(response.data).to.have.property(\"token\");\r",
+                  "    pm.expect(response.data.token).to.be.a(\"string\").and.not.empty;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Respuesta contiene datos de usuario y sesión\", function () {\r",
+                  "    pm.expect(response.data).to.have.property(\"sesion\");\r",
+                  "});\r",
+                  "\r",
+                  "if (response && response.data && response.data.token) {\r",
+                  "    pm.environment.set(\"X-Auth-Token\", response.data.token);\r",
+                  "    pm.collectionVariables.set(\"X-Auth-Token\", response.data.token);\r",
+                  "}\r"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "{{User-Agent}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Auth-Token",
+                "value": "{{X-Auth-Token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "codUsuario",
+                  "value": "{{codUsuario}}",
+                  "type": "text",
+                  "uuid": "a655be54-15a7-4385-b48d-1f4d5b6d0fcd"
+                },
+                {
+                  "key": "claveUsuario",
+                  "value": "{{claveUsuario}}",
+                  "type": "text",
+                  "uuid": "63f5a7bc-c043-44e1-8735-52ba0dca5814"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://bravova-api.superbravo.com.do/public/auth/login",
+              "protocol": "https",
+              "host": [
+                "bravova-api",
+                "superbravo",
+                "com",
+                "do"
+              ],
+              "path": [
+                "public",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "## Endpoint de Inicio de Sesión (Login)\n\nAutentica al usuario en la plataforma BravoVa utilizando credenciales de acceso. Al autenticarse correctamente, retorna los datos de la sesión del usuario, datos del cliente y el token de sesión (`X-Auth-Token`).\n\n### Parámetros del Formulario (Body)\n| Campo | Tipo | Requerido | Descripción |\n| :--- | :--- | :--- | :--- |\n| `codUsuario` | Texto | Sí | Número de cédula o identificador único del usuario. |\n| `claveUsuario` | Texto | Sí | Contraseña de acceso asociada a la cuenta. |\n\n### Respuestas\n- **200 OK**: Sesión iniciada con éxito. Retorna objeto con `data.token` y datos de perfil.\n- **401 Unauthorized**: Cédula o contraseña incorrectas.\n\n### Automatización Postman\nEl script de prueba almacena automáticamente `response.data.token` en las variables `X-Auth-Token` (entorno y colección)."
+          },
+          "response": []
+        },
+        {
+          "name": "LIST ARTICULOS",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://bravova-api.superbravo.com.do/public/articulo/list?paginationMaxItems=99&paginationOffset=0&showOrder=importerankingArticulo%20desc%20&model.filterByIdTienda=1008",
+              "protocol": "https",
+              "host": [
+                "bravova-api",
+                "superbravo",
+                "com",
+                "do"
+              ],
+              "path": [
+                "public",
+                "articulo",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "paginationMaxItems",
+                  "value": "99"
+                },
+                {
+                  "key": "paginationOffset",
+                  "value": "0"
+                },
+                {
+                  "key": "model.filterByIdSeccion",
+                  "value": "8",
+                  "disabled": true
+                },
+                {
+                  "key": "showOrder",
+                  "value": "importerankingArticulo%20desc%20"
+                },
+                {
+                  "key": "model.filterByIdTienda",
+                  "value": "1008"
+                }
+              ]
+            },
+            "description": "## Listado Paginado de Artículos\n\nRecupera el catálogo de productos disponibles para la venta en una tienda física seleccionada.\n\n### Parámetros de Consulta (Query Params)\n| Parámetro | Tipo | Descripción |\n| :--- | :--- | :--- |\n| `paginationMaxItems` | Entero | Número máximo de elementos a devolver por página (ej. `99`). |\n| `paginationOffset` | Entero | Desplazamiento inicial para paginación (comienza en `0`). |\n| `model.filterByIdTienda` | Entero | ID de la tienda física para consultar catálogo local (ej. `1008`). |\n| `model.filterByIdSeccion` | Entero | *(Opcional)* Filtra por sección o categoría de productos. |\n| `showOrder` | Cadena | Criterio de ordenamiento (`importerankingArticulo desc` para más populares). |\n\n### Respuestas\n- **200 OK**: Retorna lista de artículos con precios, códigos de barra, descripciones y disponibilidad."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "pm.test(\"Código de estado HTTP es 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"La respuesta es un objeto JSON válido\", function () {\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"La respuesta incluye la clave data\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property(\"data\");\r",
+                  "});\r"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET PHOTOS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://bravova-resources.superbravo.com.do/images/catalogo/{{size}}/{{idexternoArticulo}}_1.png?v={{version_imagen}}",
+              "protocol": "https",
+              "host": [
+                "bravova-resources",
+                "superbravo",
+                "com",
+                "do"
+              ],
+              "path": [
+                "images",
+                "catalogo",
+                "{{size}}",
+                "{{idexternoArticulo}}_1.png"
+              ],
+              "query": [
+                {
+                  "key": "v",
+                  "value": "{{version_imagen}}"
+                }
+              ]
+            },
+            "description": "## CDN de Imágenes de Productos\n\nPermite descargar o renderizar la imagen oficial de un producto a partir de su código externo y dimensiones deseadas.\n\n### Parámetros de Ruta (Path Variables)\n- `{{size}}`: Resolución deseada (ej. `300x300`, `600x600`, etc.).\n- `{{idexternoArticulo}}`: Código externo o identificador visual del artículo.\n\n### Parámetros de Consulta (Query Params)\n- `v`: Número de versión para invalidar la caché del navegador o CDN."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "pm.test(\"Código de estado HTTP es 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Encabezado Content-Type es imagen\", function () {\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"image\");\r",
+                  "});\r"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "LIST SECCION",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://bravova-api.superbravo.com.do/public/seccion/list?showOrder=ordenSeccion%2CnombreSeccion%20asc",
+              "protocol": "https",
+              "host": [
+                "bravova-api",
+                "superbravo",
+                "com",
+                "do"
+              ],
+              "path": [
+                "public",
+                "seccion",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "showOrder",
+                  "value": "ordenSeccion%2CnombreSeccion%20asc"
+                }
+              ]
+            },
+            "description": "## Listado de Secciones y Departamentos\n\nObtiene la estructura jerárquica de secciones y categorías de productos disponibles en el supermercado (Lácteos, Bebidas, Carnes, etc.).\n\n### Parámetros de Consulta (Query Params)\n| Parámetro | Tipo | Descripción |\n| :--- | :--- | :--- |\n| `showOrder` | Cadena | Orden de las secciones (por defecto `ordenSeccion,nombreSeccion asc`). |"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "pm.test(\"Código de estado HTTP es 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Respuesta contiene array de secciones\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property(\"data\");\r",
+                  "});\r"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "LIST ARTICULO (CON PRECIO)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://bravova-api.superbravo.com.do/public/articulo/list?paginationMaxItems=99&paginationOffset=0&showOrder=importerankingArticulo%20desc",
+              "protocol": "https",
+              "host": [
+                "bravova-api",
+                "superbravo",
+                "com",
+                "do"
+              ],
+              "path": [
+                "public",
+                "articulo",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "model.filterByIdTienda",
+                  "value": "1002",
+                  "description": "Categoria?????",
+                  "disabled": true
+                },
+                {
+                  "key": "paginationMaxItems",
+                  "value": "99"
+                },
+                {
+                  "key": "paginationOffset",
+                  "value": "0"
+                },
+                {
+                  "key": "model.filterByIdSeccion",
+                  "value": "1020",
+                  "disabled": true
+                },
+                {
+                  "key": "showOrder",
+                  "value": "importerankingArticulo%20desc"
+                }
+              ]
+            },
+            "description": "## Listado de Artículos con Desglose de Precios\n\nConsulta artículos del catálogo incluyendo precios de venta vigentes, impuestos (ITBIS) y promociones asociadas en la tienda física indicada.\n\n### Parámetros de Consulta (Query Params)\n- `paginationMaxItems`: Cantidad máxima por página.\n- `paginationOffset`: Desplazamiento de página.\n- `model.filterByIdTienda`: Filtro por tienda de venta.\n- `model.filterByIdSeccion`: Filtro opcional por categoría.\n- `showOrder`: Ordenamiento por relevancia de ventas o precio."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "pm.test(\"Código de estado HTTP es 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Respuesta JSON válida con datos\", function () {\r",
+                  "    pm.response.to.be.json;\r",
+                  "    const res = pm.response.json();\r",
+                  "    pm.expect(res).to.have.property(\"data\");\r",
+                  "});\r"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "CATALOGOS - IMAGES",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://bravova-resources.superbravo.com.do/images/catalogo/sections/CAT_BBB_000.png",
+              "protocol": "https",
+              "host": [
+                "bravova-resources",
+                "superbravo",
+                "com",
+                "do"
+              ],
+              "path": [
+                "images",
+                "catalogo",
+                "sections",
+                "CAT_BBB_000.png"
+              ]
+            },
+            "description": "## Imágenes y Banners de Catálogos\n\nAcceso a recursos gráficos estáticos, banners publicitarios y separadores de secciones del catálogo digital."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "pm.test(\"Código de estado HTTP es 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "PRIVATE",
+      "item": [
+        {
+          "name": "GET FAVORITOS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://bravova-api.superbravo.com.do/private/cliente/favorito/check?idArticuloFavorito=27775",
+              "protocol": "https",
+              "host": [
+                "bravova-api",
+                "superbravo",
+                "com",
+                "do"
+              ],
+              "path": [
+                "private",
+                "cliente",
+                "favorito",
+                "check"
+              ],
+              "query": [
+                {
+                  "key": "idArticuloFavorito",
+                  "value": "27775"
+                }
+              ]
+            },
+            "description": "## Verificación de Artículo Favorito\n\nComprueba si un producto determinado se encuentra registrado en la lista de favoritos del cliente autenticado.\n\n> [!IMPORTANT]\n> **Requiere Autenticación:** Se debe enviar la cabecera `X-Auth-Token` con un token de sesión activo.\n\n### Parámetros de Consulta (Query Params)\n| Parámetro | Tipo | Descripción |\n| :--- | :--- | :--- |\n| `idArticuloFavorito` | Entero | ID numérico del producto a comprobar. |"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "pm.test(\"Código de estado HTTP es 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Respuesta contiene confirmación de favorito\", function () {\r",
+                  "    const res = pm.response.json();\r",
+                  "    pm.expect(res).to.be.an(\"object\");\r",
+                  "});\r"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "LOGOUT",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "{{User-Agent}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Auth-Token",
+                "value": "{{X-Auth-Token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://bravova-api.superbravo.com.do/private/auth/logout?token={{X-Auth-Token}}",
+              "protocol": "https",
+              "host": [
+                "bravova-api",
+                "superbravo",
+                "com",
+                "do"
+              ],
+              "path": [
+                "private",
+                "auth",
+                "logout"
+              ],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{X-Auth-Token}}"
+                }
+              ]
+            },
+            "description": "## Cierre de Sesión (Logout)\n\nInvalida el token de sesión activo en el servidor para revocar el acceso a recursos privados.\n\n### Parámetros de Consulta (Query Params)\n- `token`: Valor del token a invalidar (proporcionado mediante `{{X-Auth-Token}}`).\n\n### Automatización Postman\nEl script de prueba limpia automáticamente la variable `X-Auth-Token` tras un cierre exitoso."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "pm.test(\"Sesión cerrada exitosamente (200 OK)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// Limpiar el token de sesión activo en Postman\r",
+                  "pm.environment.unset(\"X-Auth-Token\");\r",
+                  "pm.collectionVariables.set(\"X-Auth-Token\", \"\");\r"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET CLIENTE DIRECCION",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://bravova-api.superbravo.com.do/private/cliente/direccion/list?withZonaDelivery=1",
+              "protocol": "https",
+              "host": [
+                "bravova-api",
+                "superbravo",
+                "com",
+                "do"
+              ],
+              "path": [
+                "private",
+                "cliente",
+                "direccion",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "withZonaDelivery",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "## Direcciones del Cliente y Zona de Delivery\n\nRecupera las direcciones de entrega guardadas en el perfil del usuario autenticado, junto con su zona de reparto (*delivery zone*) y tienda asociada.\n\n> [!IMPORTANT]\n> **Requiere Autenticación:** Cabecera `X-Auth-Token` obligatoria.\n\n### Parámetros de Consulta (Query Params)\n- `withZonaDelivery`: `1` para incluir la zona geográfica y tienda asignada para delivery."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "pm.test(\"Código de estado HTTP es 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Retorna lista de direcciones del usuario\", function () {\r",
+                  "    const res = pm.response.json();\r",
+                  "    pm.expect(res).to.have.property(\"data\");\r",
+                  "});\r"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET ARTICULO BY ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "User-Agent",
+                "value": "{{User-Agent}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Auth-Token",
+                "value": "{{X-Auth-Token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://bravova-api.superbravo.com.do/public/articulo/get?idArticulo=27775&filterByIdTienda=1008",
+              "protocol": "https",
+              "host": [
+                "bravova-api",
+                "superbravo",
+                "com",
+                "do"
+              ],
+              "path": [
+                "public",
+                "articulo",
+                "get"
+              ],
+              "query": [
+                {
+                  "key": "idArticulo",
+                  "value": "27775"
+                },
+                {
+                  "key": "filterByIdTienda",
+                  "value": "1008"
+                }
+              ]
+            },
+            "description": "## Detalle de Artículo por ID\n\nConsulta la ficha técnica completa, precios por unidad, códigos de barra y disponibilidad de un artículo específico en la tienda indicada.\n\n### Parámetros de Consulta (Query Params)\n| Parámetro | Tipo | Descripción |\n| :--- | :--- | :--- |\n| `idArticulo` | Entero | Identificador numérico único del producto. |\n| `filterByIdTienda` | Entero | Identificador de la tienda para consultar existencias y precios locales. |"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "pm.test(\"Código de estado HTTP es 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Respuesta contiene datos del artículo\", function () {\r",
+                  "    const res = pm.response.json();\r",
+                  "    pm.expect(res).to.have.property(\"data\");\r",
+                  "});\r"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "SEARCH PRODUCT",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://bravova-api.superbravo.com.do/public/articulo/searchSuggestions?model.filterByIdTienda=1008&paginationMaxItems=10&paginationOffset=0&model.nombreArticulo=Coca&showOrder=score",
+              "protocol": "https",
+              "host": [
+                "bravova-api",
+                "superbravo",
+                "com",
+                "do"
+              ],
+              "path": [
+                "public",
+                "articulo",
+                "searchSuggestions"
+              ],
+              "query": [
+                {
+                  "key": "model.filterByIdTienda",
+                  "value": "1008"
+                },
+                {
+                  "key": "paginationMaxItems",
+                  "value": "10"
+                },
+                {
+                  "key": "paginationOffset",
+                  "value": "0"
+                },
+                {
+                  "key": "model.nombreArticulo",
+                  "value": "Coca"
+                },
+                {
+                  "key": "showOrder",
+                  "value": "score"
+                }
+              ]
+            },
+            "description": "## Búsqueda Asistida y Sugerencias de Productos\n\nEndpoint de autocompletado y predicción de búsqueda. Retorna sugerencias de productos en tiempo real según el término ingresado.\n\n### Parámetros de Consulta (Query Params)\n| Parámetro | Tipo | Descripción |\n| :--- | :--- | :--- |\n| `model.nombreArticulo` | Cadena | Término o nombre a buscar (ej. `Coca`, `Arroz`, `Leche`). |\n| `model.filterByIdTienda` | Entero | ID de la tienda para asegurar que los productos sugeridos estén disponibles. |\n| `paginationMaxItems` | Entero | Cantidad de sugerencias deseadas (ej. `10`). |\n| `paginationOffset` | Entero | Desplazamiento para paginación (por defecto `0`). |\n| `showOrder` | Cadena | Ordenamiento por coincidencia o relevancia (`score`). |"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {},
+                "exec": [
+                  "pm.test(\"Código de estado HTTP es 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Retorna sugerencias de búsqueda\", function () {\r",
+                  "    const res = pm.response.json();\r",
+                  "    pm.expect(res).to.have.property(\"data\");\r",
+                  "});\r"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "auth": {
+        "type": "apikey",
+        "apikey": [
+          {
+            "key": "value",
+            "value": "{{X-Auth-Token}}",
+            "type": "string"
+          },
+          {
+            "key": "key",
+            "value": "X-Auth-Token",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://bravova-api.superbravo.com.do",
+      "type": "string",
+      "description": "URL base para los endpoints REST de la API BravoVa."
+    },
+    {
+      "key": "resourcesBaseUrl",
+      "value": "https://bravova-resources.superbravo.com.do",
+      "type": "string",
+      "description": "URL base para recursos estáticos, fotos de productos y catálogos."
+    },
+    {
+      "key": "User-Agent",
+      "value": "okhttp/4.12.0",
+      "type": "string",
+      "description": "Cabecera User-Agent recomendada para emular cliente móvil."
+    },
+    {
+      "key": "X-Auth-Token",
+      "value": "",
+      "type": "string",
+      "description": "Token de autenticación de sesión (se asigna automáticamente al ejecutar LOGIN)."
+    },
+    {
+      "key": "codUsuario",
+      "value": "",
+      "type": "string",
+      "description": "Cédula o identificador de usuario para iniciar sesión."
+    },
+    {
+      "key": "claveUsuario",
+      "value": "",
+      "type": "string",
+      "description": "Contraseña de acceso del usuario."
+    },
+    {
+      "key": "idTienda",
+      "value": "1008",
+      "type": "string",
+      "description": "Identificador de la tienda física (1008 = Tienda de referencia para stock y precios)."
+    },
+    {
+      "key": "idSeccion",
+      "value": "8",
+      "type": "string",
+      "description": "Identificador numérico de la sección o categoría del catálogo."
+    },
+    {
+      "key": "idArticulo",
+      "value": "27775",
+      "type": "string",
+      "description": "Identificador numérico de un artículo para pruebas de detalle o favoritos."
+    },
+    {
+      "key": "size",
+      "value": "300x300",
+      "type": "string",
+      "description": "Dimensiones de imagen deseadas para el CDN de catálogo (ej. 300x300, 600x600)."
+    },
+    {
+      "key": "idexternoArticulo",
+      "value": "000000",
+      "type": "string",
+      "description": "Código externo o SKU del producto para consultar su fotografía."
+    },
+    {
+      "key": "version_imagen",
+      "value": "1",
+      "type": "string",
+      "description": "Parámetro de versión para control y refresco de caché de imágenes."
+    }
+  ]
+}

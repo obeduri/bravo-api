@@ -1,0 +1,133 @@
+{
+  "info": {
+    "_postman_id": "a894036d-4c73-400f-9129-4e11ce65b2dc",
+    "name": "PUBLIC - LIST SECCION",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "LIST SECCION",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://bravova-api.superbravo.com.do/public/seccion/list?showOrder=ordenSeccion%2CnombreSeccion%20asc",
+          "protocol": "https",
+          "host": [
+            "bravova-api",
+            "superbravo",
+            "com",
+            "do"
+          ],
+          "path": [
+            "public",
+            "seccion",
+            "list"
+          ],
+          "query": [
+            {
+              "key": "showOrder",
+              "value": "ordenSeccion%2CnombreSeccion%20asc"
+            }
+          ]
+        },
+        "description": "## Listado de Secciones y Departamentos\n\nObtiene la estructura jerárquica de secciones y categorías de productos disponibles en el supermercado (Lácteos, Bebidas, Carnes, etc.).\n\n### Parámetros de Consulta (Query Params)\n| Parámetro | Tipo | Descripción |\n| :--- | :--- | :--- |\n| `showOrder` | Cadena | Orden de las secciones (por defecto `ordenSeccion,nombreSeccion asc`). |"
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              "pm.test(\"Código de estado HTTP es 200 OK\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Respuesta contiene array de secciones\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"data\");\r",
+              "});\r"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://bravova-api.superbravo.com.do",
+      "type": "string",
+      "description": "URL base para los endpoints REST de la API BravoVa."
+    },
+    {
+      "key": "resourcesBaseUrl",
+      "value": "https://bravova-resources.superbravo.com.do",
+      "type": "string",
+      "description": "URL base para recursos estáticos, fotos de productos y catálogos."
+    },
+    {
+      "key": "User-Agent",
+      "value": "okhttp/4.12.0",
+      "type": "string",
+      "description": "Cabecera User-Agent recomendada para emular cliente móvil."
+    },
+    {
+      "key": "X-Auth-Token",
+      "value": "",
+      "type": "string",
+      "description": "Token de autenticación de sesión (se asigna automáticamente al ejecutar LOGIN)."
+    },
+    {
+      "key": "codUsuario",
+      "value": "",
+      "type": "string",
+      "description": "Cédula o identificador de usuario para iniciar sesión."
+    },
+    {
+      "key": "claveUsuario",
+      "value": "",
+      "type": "string",
+      "description": "Contraseña de acceso del usuario."
+    },
+    {
+      "key": "idTienda",
+      "value": "1008",
+      "type": "string",
+      "description": "Identificador de la tienda física (1008 = Tienda de referencia para stock y precios)."
+    },
+    {
+      "key": "idSeccion",
+      "value": "8",
+      "type": "string",
+      "description": "Identificador numérico de la sección o categoría del catálogo."
+    },
+    {
+      "key": "idArticulo",
+      "value": "27775",
+      "type": "string",
+      "description": "Identificador numérico de un artículo para pruebas de detalle o favoritos."
+    },
+    {
+      "key": "size",
+      "value": "300x300",
+      "type": "string",
+      "description": "Dimensiones de imagen deseadas para el CDN de catálogo (ej. 300x300, 600x600)."
+    },
+    {
+      "key": "idexternoArticulo",
+      "value": "000000",
+      "type": "string",
+      "description": "Código externo o SKU del producto para consultar su fotografía."
+    },
+    {
+      "key": "version_imagen",
+      "value": "1",
+      "type": "string",
+      "description": "Parámetro de versión para control y refresco de caché de imágenes."
+    }
+  ]
+}

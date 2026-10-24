@@ -1,0 +1,178 @@
+{
+  "info": {
+    "_postman_id": "27d242c8-3c83-4e26-b18c-c7fb036cd44c",
+    "name": "PUBLIC - LOGIN",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "LOGIN",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const response = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Código de estado HTTP es 200 OK\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Respuesta contiene token de sesión\", function () {\r",
+              "    pm.expect(response).to.have.property(\"data\");\r",
+              "    pm.expect(response.data).to.have.property(\"token\");\r",
+              "    pm.expect(response.data.token).to.be.a(\"string\").and.not.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Respuesta contiene datos de usuario y sesión\", function () {\r",
+              "    pm.expect(response.data).to.have.property(\"sesion\");\r",
+              "});\r",
+              "\r",
+              "if (response && response.data && response.data.token) {\r",
+              "    pm.environment.set(\"X-Auth-Token\", response.data.token);\r",
+              "    pm.collectionVariables.set(\"X-Auth-Token\", response.data.token);\r",
+              "}\r"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "User-Agent",
+            "value": "{{User-Agent}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Auth-Token",
+            "value": "{{X-Auth-Token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "codUsuario",
+              "value": "{{codUsuario}}",
+              "type": "text",
+              "uuid": "a655be54-15a7-4385-b48d-1f4d5b6d0fcd"
+            },
+            {
+              "key": "claveUsuario",
+              "value": "{{claveUsuario}}",
+              "type": "text",
+              "uuid": "63f5a7bc-c043-44e1-8735-52ba0dca5814"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://bravova-api.superbravo.com.do/public/auth/login",
+          "protocol": "https",
+          "host": [
+            "bravova-api",
+            "superbravo",
+            "com",
+            "do"
+          ],
+          "path": [
+            "public",
+            "auth",
+            "login"
+          ]
+        },
+        "description": "## Endpoint de Inicio de Sesión (Login)\n\nAutentica al usuario en la plataforma BravoVa utilizando credenciales de acceso. Al autenticarse correctamente, retorna los datos de la sesión del usuario, datos del cliente y el token de sesión (`X-Auth-Token`).\n\n### Parámetros del Formulario (Body)\n| Campo | Tipo | Requerido | Descripción |\n| :--- | :--- | :--- | :--- |\n| `codUsuario` | Texto | Sí | Número de cédula o identificador único del usuario. |\n| `claveUsuario` | Texto | Sí | Contraseña de acceso asociada a la cuenta. |\n\n### Respuestas\n- **200 OK**: Sesión iniciada con éxito. Retorna objeto con `data.token` y datos de perfil.\n- **401 Unauthorized**: Cédula o contraseña incorrectas.\n\n### Automatización Postman\nEl script de prueba almacena automáticamente `response.data.token` en las variables `X-Auth-Token` (entorno y colección)."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://bravova-api.superbravo.com.do",
+      "type": "string",
+      "description": "URL base para los endpoints REST de la API BravoVa."
+    },
+    {
+      "key": "resourcesBaseUrl",
+      "value": "https://bravova-resources.superbravo.com.do",
+      "type": "string",
+      "description": "URL base para recursos estáticos, fotos de productos y catálogos."
+    },
+    {
+      "key": "User-Agent",
+      "value": "okhttp/4.12.0",
+      "type": "string",
+      "description": "Cabecera User-Agent recomendada para emular cliente móvil."
+    },
+    {
+      "key": "X-Auth-Token",
+      "value": "",
+      "type": "string",
+      "description": "Token de autenticación de sesión (se asigna automáticamente al ejecutar LOGIN)."
+    },
+    {
+      "key": "codUsuario",
+      "value": "",
+      "type": "string",
+      "description": "Cédula o identificador de usuario para iniciar sesión."
+    },
+    {
+      "key": "claveUsuario",
+      "value": "",
+      "type": "string",
+      "description": "Contraseña de acceso del usuario."
+    },
+    {
+      "key": "idTienda",
+      "value": "1008",
+      "type": "string",
+      "description": "Identificador de la tienda física (1008 = Tienda de referencia para stock y precios)."
+    },
+    {
+      "key": "idSeccion",
+      "value": "8",
+      "type": "string",
+      "description": "Identificador numérico de la sección o categoría del catálogo."
+    },
+    {
+      "key": "idArticulo",
+      "value": "27775",
+      "type": "string",
+      "description": "Identificador numérico de un artículo para pruebas de detalle o favoritos."
+    },
+    {
+      "key": "size",
+      "value": "300x300",
+      "type": "string",
+      "description": "Dimensiones de imagen deseadas para el CDN de catálogo (ej. 300x300, 600x600)."
+    },
+    {
+      "key": "idexternoArticulo",
+      "value": "000000",
+      "type": "string",
+      "description": "Código externo o SKU del producto para consultar su fotografía."
+    },
+    {
+      "key": "version_imagen",
+      "value": "1",
+      "type": "string",
+      "description": "Parámetro de versión para control y refresco de caché de imágenes."
+    }
+  ]
+}
